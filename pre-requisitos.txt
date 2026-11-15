@@ -1,0 +1,57 @@
+1. Adicionar as dependências (Firebase BoM)
+
+O BoM define as versões de todas as bibliotecas Firebase de uma vez, por isso só é preciso indicar a versão num sítio. 
+Como escolheu Kotlin DSL, o projeto tem um ficheiro gradle/libs.versions.toml. A configuração mexe em três ficheiros:
+
+- gradle/libs.versions.toml
+- build.gradle.kts (app:)
+- build.gradle.kts (TapEvent)
+
+Depois:
+
+Clique em Sync Now, na barra amarela que aparece no topo.
+Copie o google-services.json que descarregou do Firebase para a pasta app/. Para a ver, mude a vista da barra lateral de «Android» para «Project».
+
+O firebase-functions só é preciso na Fase 2. Nessa altura acrescenta-se da mesma forma.
+
+2. Ativar Email/Password e criar o Firestore
+
+Na consola do Firebase, abra o seu projeto.
+
+Authentication
+
+- No menu da esquerda, escolha Build → Authentication → Get started.
+- Abra o separador Sign-in method e clique em Email/Password.
+- Ative só o primeiro interruptor («Email/Password») e clique em Save. O segundo, «Email link (passwordless)», fica desligado.
+
+Cloud Firestore
+
+- Escolha Build → Firestore Database → Create database.
+- Se perguntar a edição, escolha Standard.
+- Na localização, escolha uma da Europa, por exemplo eur3 (Europe) ou europe-west1 (Belgium). A localização não pode ser mudada depois.
+- Nas regras, escolha Start in test mode. Este modo dá acesso total e expira ao fim de 30 dias. Antes disso, substitua-o pelas regras da secção 4 do planeamento.
+- Clique em Create.
+
+3. Instalar o Firebase CLI e o Emulator Suite
+
+Os emuladores correm o Auth e o Firestore no seu computador, sem usar a base de dados real.
+
+a) Instalar os pré-requisitos (Windows)
+
+Node.js na versão LTS, a partir de nodejs.org.
+Java JDK 21 ou superior, por exemplo o Temurin em adoptium.net. Os emuladores precisam dele.
+
+b) Instalar e configurar o CLI: abra a Linha de Comandos ou o PowerShell:
+
+npm install -g firebase-tools
+firebase login
+cd C:\Users\felip\AndroidStudioProjects\TapEvent
+firebase init
+
+No firebase init:
+
+- Com as setas e a barra de espaço, marque Firestore e Emulators, e carregue em Enter.
+- Escolha Use an existing project e selecione o seu projeto.
+- Nos ficheiros de regras e índices, aceite os nomes por omissão (firestore.rules, firestore.indexes.json).
+- Nos emuladores, marque Authentication e Firestore e aceite as portas por omissão (Auth 9099, Firestore 8080, UI 4000).
+- Responda Yes quando perguntar se quer descarregar os emuladores.
