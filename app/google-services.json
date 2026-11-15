@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "813931889068",
+    "project_id": "tapevent-cm26",
+    "storage_bucket": "tapevent-cm26.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:813931889068:android:1be6212f966d42a0cfba09",
+        "android_client_info": {
+          "package_name": "pt.umaia.tapevent"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBG_SkUqfhRnuHs4AhkfJizrQsviVm1yA0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
