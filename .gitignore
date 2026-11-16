@@ -13,6 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+.idea/
+/skills-lock.json
 .agents/
 .claude/
 emulator-data/
