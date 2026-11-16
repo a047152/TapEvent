@@ -64,6 +64,26 @@ firebase emulators:start
 
 Abra http://localhost:4000 no browser. Aí vê os utilizadores e os documentos de teste e pode editá-los.
 
+Opção 1: guardar automaticamente ao fechar (recomendado)
+
+Arranque sempre os emuladores com:
+
+firebase emulators:start --import=./emulator-data --export-on-exit
+
+--export-on-exit: ao parar com Ctrl + C, grava tudo (utilizadores e documentos) na pasta emulator-data.
+--import=./emulator-data: ao arrancar, carrega o que estava nessa pasta.
+
+Da primeira vez a pasta ainda não existe. Se der erro por causa disso, arranque uma vez só com --export-on-exit e, a partir daí, use o comando completo.
+
+Opção 2: guardar já, sem parar os emuladores
+
+Abra outro terminal na mesma pasta do projeto e escreva:
+
+firebase emulators:export ./emulator-data
+
+Grava logo o estado atual. Esta opção é mais segura no Windows, porque às vezes o Ctrl+C fecha tudo antes de acabar a exportação.
+
+
 d) Ligar a app aos emuladores: em MainActivity.kt, logo no início do onCreate, antes de usar o Firebase:
 
 import com.google.firebase.Firebase

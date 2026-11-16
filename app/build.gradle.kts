@@ -12,7 +12,7 @@ plugins {
 android {
     namespace = "pt.umaia.tapevent"
     compileSdk {
-        version = release(36)
+        version = release(37)
     }
 
     defaultConfig {
