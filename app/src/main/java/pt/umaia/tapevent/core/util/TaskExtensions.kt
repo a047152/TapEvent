@@ -1,4 +1,4 @@
-package pt.umaia.tapevent.data
+package pt.umaia.tapevent.core.util
 
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.suspendCancellableCoroutine

@@ -1,4 +1,4 @@
-package pt.umaia.tapevent.data.model
+package pt.umaia.tapevent.core.model
 
 /** Values stored in the "role" field of users/{uid} (kept in Portuguese, as in the plan). */
 object Roles {

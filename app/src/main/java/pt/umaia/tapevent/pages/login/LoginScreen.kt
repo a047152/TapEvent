@@ -1,4 +1,4 @@
-package pt.umaia.tapevent.ui.login
+package pt.umaia.tapevent.pages.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -148,7 +148,7 @@ fun LoginContent(
 private fun LoginPreview() {
     TapEventTheme {
         LoginContent(
-            state = LoginUiState(email = "aluno@teste.umaia.pt"),
+            state = LoginUiState(email = "aluno@umaia.pt"),
             onNameChange = {}, onEmailChange = {}, onPasswordChange = {},
             onSubmit = {}, onToggleMode = {}
         )

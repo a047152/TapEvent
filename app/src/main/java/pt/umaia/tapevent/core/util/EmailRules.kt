@@ -1,9 +1,9 @@
-package pt.umaia.tapevent.data
+package pt.umaia.tapevent.core.util
 
 import android.util.Patterns
 
 object EmailRules {
-    /** Institutional domains accepted by the app. */
+    /** Institutional domains accepted by the app.*/
     private const val INSTITUTIONAL_DOMAIN = "umaia.pt"
 
     fun isInstitutional(email: String): Boolean {

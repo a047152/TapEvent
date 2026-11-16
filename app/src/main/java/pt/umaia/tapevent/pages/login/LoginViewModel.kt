@@ -1,4 +1,4 @@
-package pt.umaia.tapevent.ui.login
+package pt.umaia.tapevent.pages.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,20 +12,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import pt.umaia.tapevent.data.EmailRules
-import pt.umaia.tapevent.data.repository.AuthRepository
-import pt.umaia.tapevent.data.repository.ProfileNotFoundException
-
-data class LoginUiState(
-    val name: String = "",
-    val email: String = "",
-    val password: String = "",
-    val isRegisterMode: Boolean = false,
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null,
-    /** Set after a successful sign-in; the screen uses it to navigate. */
-    val signedInRole: String? = null
-)
+import pt.umaia.tapevent.core.util.EmailRules
+import pt.umaia.tapevent.core.repository.AuthRepository
+import pt.umaia.tapevent.core.repository.ProfileNotFoundException
 
 class LoginViewModel(
     private val repository: AuthRepository = AuthRepository()

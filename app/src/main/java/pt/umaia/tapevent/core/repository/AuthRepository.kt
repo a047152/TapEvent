@@ -1,12 +1,12 @@
-package pt.umaia.tapevent.data.repository
+package pt.umaia.tapevent.core.repository
 
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
-import pt.umaia.tapevent.data.awaitResult
-import pt.umaia.tapevent.data.model.Roles
-import pt.umaia.tapevent.data.model.User
+import pt.umaia.tapevent.core.util.awaitResult
+import pt.umaia.tapevent.core.model.Roles
+import pt.umaia.tapevent.core.model.User
 
 class AuthRepository {
 
