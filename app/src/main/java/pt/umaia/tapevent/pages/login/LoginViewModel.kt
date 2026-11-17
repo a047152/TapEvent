@@ -77,20 +77,20 @@ class LoginViewModel(
     }
 
     private fun validate(state: LoginUiState): String? = when {
-        state.isRegisterMode && state.name.isBlank() -> "Please enter your name."
-        !EmailRules.isValidFormat(state.email) -> "Please enter a valid email."
-        !EmailRules.isInstitutional(state.email) -> "Use your institutional UMAIA email."
-        state.password.length < 8 -> "Password must have at least 8 characters."
+        state.isRegisterMode && state.name.isBlank() -> "Escreve o teu nome."
+        !EmailRules.isValidFormat(state.email) -> "Escreve um email válido."
+        !EmailRules.isInstitutional(state.email) -> "Usa o teu email institucional UMAIA."
+        state.password.length < 8 -> "A password tem de ter pelo menos 8 caracteres."
         else -> null
     }
 
     private fun Exception.toUserMessage(): String = when (this) {
-        is FirebaseAuthWeakPasswordException -> "Password is too weak."
-        is FirebaseAuthInvalidCredentialsException -> "Invalid email or password."
-        is FirebaseAuthInvalidUserException -> "No account found with this email."
-        is FirebaseAuthUserCollisionException -> "An account with this email already exists."
-        is FirebaseNetworkException -> "No connection. Check your internet."
-        is ProfileNotFoundException -> "Your profile was not found. Contact the administration."
-        else -> message ?: "Something went wrong. Please try again."
+        is FirebaseAuthWeakPasswordException -> "A password é demasiado fraca."
+        is FirebaseAuthInvalidCredentialsException -> "Email ou password incorretos."
+        is FirebaseAuthInvalidUserException -> "Não existe nenhuma conta com este email."
+        is FirebaseAuthUserCollisionException -> "Já existe uma conta com este email."
+        is FirebaseNetworkException -> "Sem ligação. Verifica a tua internet."
+        is ProfileNotFoundException -> "O teu perfil não foi encontrado. Contacta a administração."
+        else -> "Algo correu mal. Tenta outra vez."
     }
 }

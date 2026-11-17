@@ -29,7 +29,7 @@ class ApprovalsViewModel(
             eventRepository.observePendingEvents()
                 .catch { e ->
                     _uiState.update {
-                        it.copy(isLoading = false, errorMessage = e.message ?: "Could not load events.")
+                        it.copy(isLoading = false, errorMessage = "Não foi possível carregar os eventos.")
                     }
                 }
                 .collect { events ->
@@ -60,14 +60,14 @@ class ApprovalsViewModel(
         viewModelScope.launch {
             try {
                 eventRepository.reviewEvent(event.id, approve, adminUid)
-                val text = if (approve) "Event approved. It now shows in Discover." else "Event rejected."
+                val text = if (approve) "Evento aprovado. Já aparece em Descobrir." else "Evento rejeitado."
                 // The live listener removes the event from the list automatically
                 _uiState.update { it.copy(processingIds = it.processingIds - event.id, message = text) }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         processingIds = it.processingIds - event.id,
-                        message = e.message ?: "Could not update the event."
+                        message = "Não foi possível atualizar o evento."
                     )
                 }
             }

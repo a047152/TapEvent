@@ -59,10 +59,10 @@ fun ApprovalsScreen(
     state.eventToReject?.let { event ->
         AlertDialog(
             onDismissRequest = viewModel::cancelRejection,
-            title = { Text("Reject event?") },
-            text = { Text("\"${event.title}\" will not be published. The organizer can create it again.") },
-            confirmButton = { TextButton(onClick = viewModel::confirmRejection) { Text("Reject") } },
-            dismissButton = { TextButton(onClick = viewModel::cancelRejection) { Text("Cancel") } }
+            title = { Text("Rejeitar evento?") },
+            text = { Text("\"${event.title}\" não vai ser publicado. O organizador pode criá-lo outra vez.") },
+            confirmButton = { TextButton(onClick = viewModel::confirmRejection) { Text("Rejeitar") } },
+            dismissButton = { TextButton(onClick = viewModel::cancelRejection) { Text("Cancelar") } }
         )
     }
 }
@@ -82,15 +82,15 @@ fun ApprovalsContent(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
-            Text("Administration", style = MaterialTheme.typography.labelLarge)
-            Text("Approvals", style = MaterialTheme.typography.headlineMedium)
+            Text("Serviços e associação", style = MaterialTheme.typography.labelLarge)
+            Text("Aprovações", style = MaterialTheme.typography.headlineMedium)
         }
 
         item { PendingCounter(count = state.pendingEvents.size, isLoading = state.isLoading) }
 
         item {
             Text(
-                "Events from organizers",
+                "Eventos dos organizadores",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -106,7 +106,7 @@ fun ApprovalsContent(
                 Text(state.errorMessage, color = MaterialTheme.colorScheme.error)
             }
             state.pendingEvents.isEmpty() -> item {
-                Text("No events waiting for approval.", style = MaterialTheme.typography.bodyMedium)
+                Text("Sem eventos por aprovar.", style = MaterialTheme.typography.bodyMedium)
             }
             else -> items(state.pendingEvents, key = { it.id }) { event ->
                 PendingEventCard(
@@ -121,7 +121,7 @@ fun ApprovalsContent(
         // TODO (plan step 11): "Ideas from students" section, after Propose & vote exists.
 
         item {
-            TextButton(onClick = onSignOut) { Text("Sign out") }
+            TextButton(onClick = onSignOut) { Text("Sair") }
         }
     }
 }
@@ -135,7 +135,7 @@ private fun PendingCounter(count: Int, isLoading: Boolean) {
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold
             )
-            Text("  events to approve", style = MaterialTheme.typography.bodyLarge)
+            Text("  eventos por aprovar", style = MaterialTheme.typography.bodyLarge)
         }
     }
 }
@@ -145,13 +145,13 @@ private fun PendingCounter(count: Int, isLoading: Boolean) {
 private fun ApprovalsPreview() {
     val sample = Event(
         id = "1",
-        title = "Excel workshop",
-        description = "Learn formulas, tables and charts. Bring your laptop.",
+        title = "Workshop de Excel",
+        description = "Aprende fórmulas, tabelas e gráficos. Traz o portátil.",
         format = "Workshop",
         theme = "Tecnologia",
         startAt = Timestamp.now(),
-        location = "Room B204",
-        organizerName = "Student Association",
+        location = "Sala B204",
+        organizerName = "Associação de Estudantes",
         capacity = 30
     )
     TapEventTheme {

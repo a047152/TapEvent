@@ -45,6 +45,6 @@ fun HomePlaceholderScreen(
             Button(onClick = action.onClick) { Text(action.label) }
             Spacer(Modifier.height(12.dp))
         }
-        OutlinedButton(onClick = onSignOut) { Text("Sign out") }
+        OutlinedButton(onClick = onSignOut) { Text("Sair") }
     }
 }

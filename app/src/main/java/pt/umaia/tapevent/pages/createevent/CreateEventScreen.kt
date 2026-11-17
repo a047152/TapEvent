@@ -56,7 +56,7 @@ fun CreateEventScreen(
 
     LaunchedEffect(state.submitted) {
         if (state.submitted) {
-            Toast.makeText(context, "Event sent for approval.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Evento enviado para aprovação.", Toast.LENGTH_SHORT).show()
             onSubmitted()
         }
     }
@@ -105,20 +105,20 @@ fun CreateEventContent(
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
-        TextButton(onClick = onBack) { Text("‹ Back") }
-        Text("Create event", style = MaterialTheme.typography.headlineMedium)
+        TextButton(onClick = onBack) { Text("‹ Voltar") }
+        Text("Criar evento", style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
             value = state.title,
             onValueChange = onTitleChange,
-            label = { Text("Title") },
-            placeholder = { Text("E.g.: Excel workshop") },
+            label = { Text("Título") },
+            placeholder = { Text("Ex.: Workshop de Excel") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
 
-        SectionLabel("Format")
+        SectionLabel("Formato")
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             EVENT_FORMATS.forEach { format ->
                 FilterChip(
@@ -129,7 +129,7 @@ fun CreateEventContent(
             }
         }
 
-        SectionLabel("Theme")
+        SectionLabel("Tema")
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             EVENT_THEMES.forEach { theme ->
                 FilterChip(
@@ -140,13 +140,13 @@ fun CreateEventContent(
             }
         }
 
-        SectionLabel("Date and time")
+        SectionLabel("Data e hora")
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             OutlinedButton(onClick = { showDatePicker = true }, modifier = Modifier.weight(1f)) {
-                Text(state.date?.format(DATE_FORMAT) ?: "Choose date")
+                Text(state.date?.format(DATE_FORMAT) ?: "Escolher data")
             }
             OutlinedButton(onClick = { showTimePicker = true }, modifier = Modifier.weight(1f)) {
-                Text(state.time?.format(TIME_FORMAT) ?: "Choose time")
+                Text(state.time?.format(TIME_FORMAT) ?: "Escolher hora")
             }
         }
 
@@ -154,8 +154,8 @@ fun CreateEventContent(
         OutlinedTextField(
             value = state.location,
             onValueChange = onLocationChange,
-            label = { Text("Location") },
-            placeholder = { Text("Room or space") },
+            label = { Text("Local") },
+            placeholder = { Text("Sala ou espaço") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
@@ -164,13 +164,13 @@ fun CreateEventContent(
         OutlinedTextField(
             value = state.description,
             onValueChange = onDescriptionChange,
-            label = { Text("Description") },
-            placeholder = { Text("What will happen, who it is for and what to bring") },
+            label = { Text("Descrição") },
+            placeholder = { Text("O que vai acontecer, a quem se destina e o que trazer") },
             minLines = 3,
             modifier = Modifier.fillMaxWidth()
         )
 
-        SectionLabel("Free UMAIA seats")
+        SectionLabel("Vagas UMAIA grátis")
         Row(verticalAlignment = Alignment.CenterVertically) {
             OutlinedButton(onClick = onDecreaseCapacity, enabled = state.capacity > MIN_CAPACITY) {
                 Text("−")
@@ -197,11 +197,11 @@ fun CreateEventContent(
             if (state.isSaving) {
                 CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
             } else {
-                Text("Send for approval")
+                Text("Enviar para aprovação")
             }
         }
         Text(
-            "The event is only visible to students after the administration approves it.",
+            "O evento só fica visível para os alunos depois de a administração o aprovar.",
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(top = 8.dp)
         )
@@ -239,12 +239,12 @@ private fun CreateEventPreview() {
     TapEventTheme {
         CreateEventContent(
             state = CreateEventUiState(
-                title = "Excel workshop",
+                title = "Workshop de Excel",
                 format = "Workshop",
                 theme = "Tecnologia",
                 date = LocalDate.now().plusDays(7),
                 time = LocalTime.of(18, 0),
-                location = "Room B204"
+                location = "Sala B204"
             ),
             onBack = {}, onTitleChange = {}, onFormatSelect = {}, onThemeSelect = {},
             onDateSelect = {}, onTimeSelect = {}, onLocationChange = {}, onDescriptionChange = {},

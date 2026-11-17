@@ -44,7 +44,7 @@ class CreateEventViewModel(
         }
 
         val uid = authRepository.currentUid ?: run {
-            _uiState.update { it.copy(errorMessage = "Your session expired. Please sign in again.") }
+            _uiState.update { it.copy(errorMessage = "A tua sessão expirou. Entra outra vez.") }
             return
         }
 
@@ -65,7 +65,7 @@ class CreateEventViewModel(
                 _uiState.update { it.copy(isSaving = false, submitted = true) }
             } catch (e: Exception) {
                 _uiState.update {
-                    it.copy(isSaving = false, errorMessage = e.message ?: "Could not save the event.")
+                    it.copy(isSaving = false, errorMessage = "Não foi possível guardar o evento.")
                 }
             }
         }
@@ -80,14 +80,14 @@ class CreateEventViewModel(
     private fun validate(state: CreateEventUiState): String? {
         val start = startDateTime(state)
         return when {
-            state.title.isBlank() -> "Give the event a title."
-            state.format == null -> "Choose a format."
-            state.theme == null -> "Choose a theme."
-            state.date == null -> "Choose a date."
-            state.time == null -> "Choose a time."
-            start != null && start.isBefore(ZonedDateTime.now(APP_ZONE)) -> "The event must be in the future."
-            state.location.isBlank() -> "Enter a location."
-            state.description.isBlank() -> "Write the event description."
+            state.title.isBlank() -> "Dá um nome ao evento."
+            state.format == null -> "Escolhe um formato."
+            state.theme == null -> "Escolhe um tema."
+            state.date == null -> "Escolhe uma data."
+            state.time == null -> "Escolhe uma hora."
+            start != null && start.isBefore(ZonedDateTime.now(APP_ZONE)) -> "O evento tem de ser no futuro."
+            state.location.isBlank() -> "Indica o local."
+            state.description.isBlank() -> "Escreve a descrição do evento."
             else -> null
         }
     }

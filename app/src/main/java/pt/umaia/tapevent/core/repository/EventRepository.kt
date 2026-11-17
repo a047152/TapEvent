@@ -75,6 +75,26 @@ class EventRepository {
         awaitClose { registration.remove() }
     }
 
+    /**
+     * Live list of approved events (past and future), soonest first.
+     * Screens filter by date on the device, so no composite index is needed.
+     */
+    fun observeApprovedEvents(): Flow<List<Event>> = callbackFlow {
+        val registration = events
+            .whereEqualTo("status", EventStatus.APPROVED)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val list = snapshot?.documents.orEmpty()
+                    .map(Event::fromDocument)
+                    .sortedBy { it.startAt?.seconds ?: Long.MAX_VALUE }
+                trySend(list)
+            }
+        awaitClose { registration.remove() }
+    }
+
     /** Admin decision: status becomes "aprovado" or "rejeitado". */
     suspend fun reviewEvent(eventId: String, approve: Boolean, adminUid: String) {
         val update = mapOf(
@@ -88,7 +108,7 @@ class EventRepository {
     companion object {
         fun timeSlotFor(start: ZonedDateTime): String = when (start.hour) {
             in 0..11 -> TimeSlot.MORNING
-            in 12..18 -> TimeSlot.AFTERNOON
+            in 12..17 -> TimeSlot.AFTERNOON
             else -> TimeSlot.NIGHT
         }
 

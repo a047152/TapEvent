@@ -11,6 +11,7 @@ import com.google.firebase.auth.auth
 import pt.umaia.tapevent.core.model.Roles
 import pt.umaia.tapevent.pages.approvals.ApprovalsScreen
 import pt.umaia.tapevent.pages.createevent.CreateEventScreen
+import pt.umaia.tapevent.pages.discover.DiscoverScreen
 import pt.umaia.tapevent.pages.home.HomeAction
 import pt.umaia.tapevent.pages.home.HomePlaceholderScreen
 import pt.umaia.tapevent.pages.login.LoginScreen
@@ -56,14 +57,17 @@ fun AppNavGraph(
             )
         }
         composable(Routes.STUDENT_HOME) {
-            HomePlaceholderScreen(title = "Discover (student)", onSignOut = signOut)
+            DiscoverScreen(
+                onEventClick = { /* TODO (next page): open the Event details screen */ },
+                onSignOut = signOut
+            )
         }
         composable(Routes.ORGANIZER_HOME) {
             HomePlaceholderScreen(
-                title = "Dashboard (organizer)",
+                title = "Painel (organizador)",
                 onSignOut = signOut,
                 actions = listOf(
-                    HomeAction("Create event") { navController.navigate(Routes.CREATE_EVENT) }
+                    HomeAction("Criar evento") { navController.navigate(Routes.CREATE_EVENT) }
                 )
             )
         }

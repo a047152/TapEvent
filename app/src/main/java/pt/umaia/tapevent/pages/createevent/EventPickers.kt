@@ -47,7 +47,7 @@ internal fun EventDatePickerDialog(
                 enabled = pickerState.selectedDateMillis != null
             ) { Text("OK") }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     ) {
         DatePicker(state = pickerState)
     }
@@ -73,7 +73,7 @@ internal fun EventTimePickerDialog(
                 Text("OK")
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } },
         text = { TimePicker(state = pickerState) }
     )
 }

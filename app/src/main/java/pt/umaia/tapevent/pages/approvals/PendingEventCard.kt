@@ -34,8 +34,8 @@ fun PendingEventCard(
         Column(Modifier.padding(16.dp)) {
             Text(event.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Text(
-                "${event.organizerName.ifBlank { "Unknown organizer" }} · " +
-                        "${DateFormats.shortDateTime(event.startAt)} · ${event.capacity} seats",
+                "${event.organizerName.ifBlank { "Organizador desconhecido" }} · " +
+                        "${DateFormats.shortDateTime(event.startAt)} · ${event.capacity} vagas",
                 style = MaterialTheme.typography.bodySmall
             )
             Text(event.location, style = MaterialTheme.typography.bodySmall)
@@ -55,10 +55,10 @@ fun PendingEventCard(
             Spacer(Modifier.height(12.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Button(onClick = onApprove, enabled = !isProcessing, modifier = Modifier.weight(1f)) {
-                    Text("Approve")
+                    Text("Aprovar")
                 }
                 OutlinedButton(onClick = onReject, enabled = !isProcessing, modifier = Modifier.weight(1f)) {
-                    Text("Reject")
+                    Text("Rejeitar")
                 }
             }
         }

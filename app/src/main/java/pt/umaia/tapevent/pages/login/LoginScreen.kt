@@ -73,7 +73,7 @@ fun LoginContent(
     ) {
         Text("TapEvent", style = MaterialTheme.typography.headlineLarge)
         Text(
-            if (state.isRegisterMode) "Create your account" else "Sign in with your UMAIA email",
+            if (state.isRegisterMode) "Cria a tua conta" else "Entra com o teu email UMAIA",
             style = MaterialTheme.typography.bodyMedium
         )
         Spacer(Modifier.height(24.dp))
@@ -82,7 +82,7 @@ fun LoginContent(
             OutlinedTextField(
                 value = state.name,
                 onValueChange = onNameChange,
-                label = { Text("Name") },
+                label = { Text("Nome") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 modifier = Modifier.fillMaxWidth()
@@ -93,7 +93,7 @@ fun LoginContent(
         OutlinedTextField(
             value = state.email,
             onValueChange = onEmailChange,
-            label = { Text("Institutional email") },
+            label = { Text("Email institucional") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
@@ -130,14 +130,14 @@ fun LoginContent(
             if (state.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
             } else {
-                Text(if (state.isRegisterMode) "Create account" else "Sign in")
+                Text(if (state.isRegisterMode) "Criar conta" else "Entrar")
             }
         }
 
         TextButton(onClick = onToggleMode, enabled = !state.isLoading) {
             Text(
-                if (state.isRegisterMode) "Already have an account? Sign in"
-                else "No account yet? Create one"
+                if (state.isRegisterMode) "Já tens conta? Entrar"
+                else "Ainda não tens conta? Criar conta"
             )
         }
     }
@@ -160,7 +160,7 @@ private fun LoginPreview() {
 private fun RegisterPreview() {
     TapEventTheme {
         LoginContent(
-            state = LoginUiState(isRegisterMode = true, errorMessage = "Use your institutional UMAIA email."),
+            state = LoginUiState(isRegisterMode = true, errorMessage = "Usa o teu email institucional UMAIA."),
             onNameChange = {}, onEmailChange = {}, onPasswordChange = {},
             onSubmit = {}, onToggleMode = {}
         )
