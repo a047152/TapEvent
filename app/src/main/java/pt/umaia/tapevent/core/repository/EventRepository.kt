@@ -4,9 +4,13 @@ import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
-import pt.umaia.tapevent.core.util.awaitResult
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import pt.umaia.tapevent.core.model.Event
 import pt.umaia.tapevent.core.model.EventStatus
 import pt.umaia.tapevent.core.model.TimeSlot
+import pt.umaia.tapevent.core.util.awaitResult
 import java.time.DayOfWeek
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -49,6 +53,36 @@ class EventRepository {
         )
         val ref = events.add(data).awaitResult()
         return ref.id
+    }
+
+    /**
+     * Live list of events waiting for approval, soonest first.
+     * Sorted on the device, so no composite index is needed.
+     */
+    fun observePendingEvents(): Flow<List<Event>> = callbackFlow {
+        val registration = events
+            .whereEqualTo("status", EventStatus.PENDING)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val list = snapshot?.documents.orEmpty()
+                    .map(Event::fromDocument)
+                    .sortedBy { it.startAt?.seconds ?: Long.MAX_VALUE }
+                trySend(list)
+            }
+        awaitClose { registration.remove() }
+    }
+
+    /** Admin decision: status becomes "aprovado" or "rejeitado". */
+    suspend fun reviewEvent(eventId: String, approve: Boolean, adminUid: String) {
+        val update = mapOf(
+            "status" to if (approve) EventStatus.APPROVED else EventStatus.REJECTED,
+            "reviewedBy" to adminUid,
+            "reviewedAt" to FieldValue.serverTimestamp()
+        )
+        events.document(eventId).update(update).awaitResult()
     }
 
     companion object {

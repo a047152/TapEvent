@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import pt.umaia.tapevent.core.model.Roles
+import pt.umaia.tapevent.pages.approvals.ApprovalsScreen
 import pt.umaia.tapevent.pages.createevent.CreateEventScreen
 import pt.umaia.tapevent.pages.home.HomeAction
 import pt.umaia.tapevent.pages.home.HomePlaceholderScreen
@@ -73,7 +74,7 @@ fun AppNavGraph(
             )
         }
         composable(Routes.ADMIN_HOME) {
-            HomePlaceholderScreen(title = "Approvals (admin)", onSignOut = signOut)
+            ApprovalsScreen(onSignOut = signOut)
         }
     }
 }
