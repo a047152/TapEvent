@@ -6,12 +6,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import pt.umaia.tapevent.core.model.Roles
 import pt.umaia.tapevent.pages.approvals.ApprovalsScreen
 import pt.umaia.tapevent.pages.createevent.CreateEventScreen
 import pt.umaia.tapevent.pages.discover.DiscoverScreen
+import pt.umaia.tapevent.pages.eventdetails.EventDetailsScreen
 import pt.umaia.tapevent.pages.home.HomeAction
 import pt.umaia.tapevent.pages.home.HomePlaceholderScreen
 import pt.umaia.tapevent.pages.login.LoginScreen
@@ -19,9 +22,12 @@ import pt.umaia.tapevent.pages.login.LoginScreen
 object Routes {
     const val LOGIN = "login"
     const val STUDENT_HOME = "student/discover"
+    const val EVENT_DETAILS = "student/event/{eventId}"
     const val ORGANIZER_HOME = "organizer/dashboard"
     const val CREATE_EVENT = "organizer/create-event"
     const val ADMIN_HOME = "admin/approvals"
+
+    fun eventDetails(eventId: String) = "student/event/$eventId"
 
     fun homeFor(role: String): String = when (role) {
         Roles.ORGANIZER -> ORGANIZER_HOME
@@ -58,8 +64,19 @@ fun AppNavGraph(
         }
         composable(Routes.STUDENT_HOME) {
             DiscoverScreen(
-                onEventClick = { /* TODO (next page): open the Event details screen */ },
+                onEventClick = { event -> navController.navigate(Routes.eventDetails(event.id)) },
                 onSignOut = signOut
+            )
+        }
+        composable(
+            route = Routes.EVENT_DETAILS,
+            arguments = listOf(navArgument("eventId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId").orEmpty()
+            EventDetailsScreen(
+                eventId = eventId,
+                onBack = { navController.popBackStack() },
+                onViewTicket = { /* TODO (next page): open the "A tua inscrição" ticket screen */ }
             )
         }
         composable(Routes.ORGANIZER_HOME) {

@@ -95,6 +95,19 @@ class EventRepository {
         awaitClose { registration.remove() }
     }
 
+    /** Live view of one event (seats change while the student is looking at it). Null if deleted. */
+    fun observeEvent(eventId: String): Flow<Event?> = callbackFlow {
+        val registration = events.document(eventId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                trySend(snapshot?.takeIf { it.exists() }?.let(Event::fromDocument))
+            }
+        awaitClose { registration.remove() }
+    }
+
     /** Admin decision: status becomes "aprovado" or "rejeitado". */
     suspend fun reviewEvent(eventId: String, approve: Boolean, adminUid: String) {
         val update = mapOf(
