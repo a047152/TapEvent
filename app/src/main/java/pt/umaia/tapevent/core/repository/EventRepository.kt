@@ -95,6 +95,23 @@ class EventRepository {
         awaitClose { registration.remove() }
     }
 
+    /** Live list of one organizer's events (every status), soonest first. */
+    fun observeOrganizerEvents(organizerId: String): Flow<List<Event>> = callbackFlow {
+        val registration = events
+            .whereEqualTo("organizerId", organizerId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val list = snapshot?.documents.orEmpty()
+                    .map(Event::fromDocument)
+                    .sortedBy { it.startAt?.seconds ?: Long.MAX_VALUE }
+                trySend(list)
+            }
+        awaitClose { registration.remove() }
+    }
+
     /** Live view of one event (seats change while the student is looking at it). Null if deleted. */
     fun observeEvent(eventId: String): Flow<Event?> = callbackFlow {
         val registration = events.document(eventId)

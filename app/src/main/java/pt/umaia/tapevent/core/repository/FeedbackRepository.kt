@@ -3,6 +3,9 @@ package pt.umaia.tapevent.core.repository
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import pt.umaia.tapevent.core.model.Feedback
 import pt.umaia.tapevent.core.model.Registration
 import pt.umaia.tapevent.core.model.RegistrationStatus
@@ -21,6 +24,20 @@ class FeedbackRepository {
     suspend fun getFeedback(eventId: String, uid: String): Feedback? {
         val doc = feedback.document(Feedback.idFor(eventId, uid)).get().awaitResult()
         return doc.takeIf { it.exists() }?.let(Feedback::fromDocument)
+    }
+
+    /** Live list of all feedback for one organizer's events (Dashboard averages, "Feedback dos teus eventos"). */
+    fun observeOrganizerFeedback(organizerId: String): Flow<List<Feedback>> = callbackFlow {
+        val registration = feedback
+            .whereEqualTo("organizerId", organizerId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                trySend(snapshot?.documents.orEmpty().map(Feedback::fromDocument))
+            }
+        awaitClose { registration.remove() }
     }
 
     /**

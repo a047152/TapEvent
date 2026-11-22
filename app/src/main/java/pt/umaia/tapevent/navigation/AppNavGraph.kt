@@ -13,12 +13,11 @@ import com.google.firebase.auth.auth
 import pt.umaia.tapevent.core.model.Roles
 import pt.umaia.tapevent.pages.approvals.ApprovalsScreen
 import pt.umaia.tapevent.pages.createevent.CreateEventScreen
+import pt.umaia.tapevent.pages.dashboard.DashboardScreen
 import pt.umaia.tapevent.pages.discover.DiscoverScreen
 import pt.umaia.tapevent.pages.eventdetails.EventDetailsScreen
 import pt.umaia.tapevent.pages.feedback.FeedbackScreen
 import pt.umaia.tapevent.pages.ticket.TicketScreen
-import pt.umaia.tapevent.pages.home.HomeAction
-import pt.umaia.tapevent.pages.home.HomePlaceholderScreen
 import pt.umaia.tapevent.pages.login.LoginScreen
 import pt.umaia.tapevent.pages.myevents.MyEventsScreen
 
@@ -128,12 +127,11 @@ fun AppNavGraph(
             )
         }
         composable(Routes.ORGANIZER_HOME) {
-            HomePlaceholderScreen(
-                title = "Painel (organizador)",
-                onSignOut = signOut,
-                actions = listOf(
-                    HomeAction("Criar evento") { navController.navigate(Routes.CREATE_EVENT) }
-                )
+            DashboardScreen(
+                onCreateEvent = { navController.navigate(Routes.CREATE_EVENT) },
+                onViewAttendees = { /* TODO (next page): open "Inscritos no evento" */ },
+                onViewFeedback = { /* TODO: open "Feedback dos teus eventos" */ },
+                onSignOut = signOut
             )
         }
         composable(Routes.CREATE_EVENT) {
