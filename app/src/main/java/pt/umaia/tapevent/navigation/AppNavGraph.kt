@@ -15,6 +15,7 @@ import pt.umaia.tapevent.pages.approvals.ApprovalsScreen
 import pt.umaia.tapevent.pages.createevent.CreateEventScreen
 import pt.umaia.tapevent.pages.discover.DiscoverScreen
 import pt.umaia.tapevent.pages.eventdetails.EventDetailsScreen
+import pt.umaia.tapevent.pages.ticket.TicketScreen
 import pt.umaia.tapevent.pages.home.HomeAction
 import pt.umaia.tapevent.pages.home.HomePlaceholderScreen
 import pt.umaia.tapevent.pages.login.LoginScreen
@@ -23,11 +24,13 @@ object Routes {
     const val LOGIN = "login"
     const val STUDENT_HOME = "student/discover"
     const val EVENT_DETAILS = "student/event/{eventId}"
+    const val TICKET = "student/ticket/{eventId}"
     const val ORGANIZER_HOME = "organizer/dashboard"
     const val CREATE_EVENT = "organizer/create-event"
     const val ADMIN_HOME = "admin/approvals"
 
     fun eventDetails(eventId: String) = "student/event/$eventId"
+    fun ticket(eventId: String) = "student/ticket/$eventId"
 
     fun homeFor(role: String): String = when (role) {
         Roles.ORGANIZER -> ORGANIZER_HOME
@@ -76,7 +79,24 @@ fun AppNavGraph(
             EventDetailsScreen(
                 eventId = eventId,
                 onBack = { navController.popBackStack() },
-                onViewTicket = { /* TODO (next page): open the "A tua inscrição" ticket screen */ }
+                onViewTicket = { id -> navController.navigate(Routes.ticket(id)) }
+            )
+        }
+        composable(
+            route = Routes.TICKET,
+            arguments = listOf(navArgument("eventId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId").orEmpty()
+            TicketScreen(
+                eventId = eventId,
+                onBack = { navController.popBackStack() },
+                // Back to the event page, which now shows "Garantir vaga grátis" again
+                onCancelled = { navController.popBackStack() },
+                onBrowseEvents = {
+                    navController.navigate(Routes.STUDENT_HOME) {
+                        popUpTo(Routes.STUDENT_HOME) { inclusive = true }
+                    }
+                }
             )
         }
         composable(Routes.ORGANIZER_HOME) {

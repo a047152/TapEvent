@@ -15,6 +15,7 @@ import pt.umaia.tapevent.core.util.awaitResult
 class NoSeatsLeftException : Exception("No free seats left")
 class EventNotAvailableException : Exception("Event is not approved or already started")
 class AlreadyRegisteredException : Exception("Already registered for this event")
+class CannotCancelException : Exception("Registration can no longer be cancelled")
 
 class RegistrationRepository {
 
@@ -72,6 +73,30 @@ class RegistrationRepository {
                     "createdAt" to FieldValue.serverTimestamp()
                 )
             )
+        }.awaitResult()
+    }
+
+    /**
+     * Cancels a seat and gives it back to the event, in one transaction.
+     * Only possible before the event starts and while the status is "inscrito".
+     */
+    suspend fun cancelRegistration(eventId: String, uid: String) {
+        val eventRef = events.document(eventId)
+        val registrationRef = registrations.document(Registration.idFor(eventId, uid))
+
+        db.runTransaction { transaction ->
+            val event = transaction.get(eventRef)
+            val registration = transaction.get(registrationRef)
+
+            val startAt = event.getTimestamp("startAt")
+            val canCancel = registration.getString("status") == RegistrationStatus.REGISTERED &&
+                    startAt != null && startAt > Timestamp.now()
+            if (!canCancel) throw CannotCancelException()
+
+            val freeSeats = event.getLong("freeSeats") ?: 0L
+            val capacity = event.getLong("capacity") ?: freeSeats
+            transaction.update(eventRef, "freeSeats", (freeSeats + 1).coerceAtMost(capacity))
+            transaction.delete(registrationRef)
         }.awaitResult()
     }
 
