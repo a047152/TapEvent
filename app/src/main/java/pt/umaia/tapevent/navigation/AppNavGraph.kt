@@ -15,6 +15,7 @@ import pt.umaia.tapevent.pages.approvals.ApprovalsScreen
 import pt.umaia.tapevent.pages.createevent.CreateEventScreen
 import pt.umaia.tapevent.pages.discover.DiscoverScreen
 import pt.umaia.tapevent.pages.eventdetails.EventDetailsScreen
+import pt.umaia.tapevent.pages.feedback.FeedbackScreen
 import pt.umaia.tapevent.pages.ticket.TicketScreen
 import pt.umaia.tapevent.pages.home.HomeAction
 import pt.umaia.tapevent.pages.home.HomePlaceholderScreen
@@ -27,12 +28,14 @@ object Routes {
     const val EVENT_DETAILS = "student/event/{eventId}"
     const val TICKET = "student/ticket/{eventId}"
     const val MY_EVENTS = "student/my-events"
+    const val FEEDBACK = "student/feedback/{eventId}"
     const val ORGANIZER_HOME = "organizer/dashboard"
     const val CREATE_EVENT = "organizer/create-event"
     const val ADMIN_HOME = "admin/approvals"
 
     fun eventDetails(eventId: String) = "student/event/$eventId"
     fun ticket(eventId: String) = "student/ticket/$eventId"
+    fun feedback(eventId: String) = "student/feedback/$eventId"
 
     fun homeFor(role: String): String = when (role) {
         Roles.ORGANIZER -> ORGANIZER_HOME
@@ -77,12 +80,23 @@ fun AppNavGraph(
             MyEventsScreen(
                 onOpenTicket = { id -> navController.navigate(Routes.ticket(id)) },
                 onOpenEvent = { id -> navController.navigate(Routes.eventDetails(id)) },
-                onGiveFeedback = { /* TODO (next page): open the Feedback screen */ },
+                onGiveFeedback = { id -> navController.navigate(Routes.feedback(id)) },
                 onBrowseEvents = {
                     navController.navigate(Routes.STUDENT_HOME) {
                         popUpTo(Routes.STUDENT_HOME) { inclusive = true }
                     }
                 }
+            )
+        }
+        composable(
+            route = Routes.FEEDBACK,
+            arguments = listOf(navArgument("eventId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId").orEmpty()
+            FeedbackScreen(
+                eventId = eventId,
+                onBack = { navController.popBackStack() },
+                onSent = { navController.popBackStack() }
             )
         }
         composable(
