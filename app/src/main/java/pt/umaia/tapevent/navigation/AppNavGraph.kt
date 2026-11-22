@@ -19,12 +19,14 @@ import pt.umaia.tapevent.pages.ticket.TicketScreen
 import pt.umaia.tapevent.pages.home.HomeAction
 import pt.umaia.tapevent.pages.home.HomePlaceholderScreen
 import pt.umaia.tapevent.pages.login.LoginScreen
+import pt.umaia.tapevent.pages.myevents.MyEventsScreen
 
 object Routes {
     const val LOGIN = "login"
     const val STUDENT_HOME = "student/discover"
     const val EVENT_DETAILS = "student/event/{eventId}"
     const val TICKET = "student/ticket/{eventId}"
+    const val MY_EVENTS = "student/my-events"
     const val ORGANIZER_HOME = "organizer/dashboard"
     const val CREATE_EVENT = "organizer/create-event"
     const val ADMIN_HOME = "admin/approvals"
@@ -69,6 +71,18 @@ fun AppNavGraph(
             DiscoverScreen(
                 onEventClick = { event -> navController.navigate(Routes.eventDetails(event.id)) },
                 onSignOut = signOut
+            )
+        }
+        composable(Routes.MY_EVENTS) {
+            MyEventsScreen(
+                onOpenTicket = { id -> navController.navigate(Routes.ticket(id)) },
+                onOpenEvent = { id -> navController.navigate(Routes.eventDetails(id)) },
+                onGiveFeedback = { /* TODO (next page): open the Feedback screen */ },
+                onBrowseEvents = {
+                    navController.navigate(Routes.STUDENT_HOME) {
+                        popUpTo(Routes.STUDENT_HOME) { inclusive = true }
+                    }
+                }
             )
         }
         composable(

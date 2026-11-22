@@ -16,6 +16,7 @@ class NoSeatsLeftException : Exception("No free seats left")
 class EventNotAvailableException : Exception("Event is not approved or already started")
 class AlreadyRegisteredException : Exception("Already registered for this event")
 class CannotCancelException : Exception("Registration can no longer be cancelled")
+class AttendanceNotOpenException : Exception("Attendance can only be confirmed after the event starts")
 
 class RegistrationRepository {
 
@@ -34,6 +35,47 @@ class RegistrationRepository {
                 trySend(snapshot?.takeIf { it.exists() }?.let(Registration::fromDocument))
             }
         awaitClose { registration.remove() }
+    }
+
+    /** Live list of every registration of this student ("inscrito", "aviso" and "presente"). */
+    fun observeMyRegistrations(uid: String): Flow<List<Registration>> = callbackFlow {
+        val registration = registrations
+            .whereEqualTo("uid", uid)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                trySend(snapshot?.documents.orEmpty().map(Registration::fromDocument))
+            }
+        awaitClose { registration.remove() }
+    }
+
+    /**
+     * Marks the student as present. Allowed from the event start time onwards,
+     * and only for a registration that holds a seat ("inscrito").
+     */
+    suspend fun confirmAttendance(eventId: String, uid: String) {
+        val eventRef = events.document(eventId)
+        val registrationRef = registrations.document(Registration.idFor(eventId, uid))
+
+        db.runTransaction { transaction ->
+            val event = transaction.get(eventRef)
+            val registration = transaction.get(registrationRef)
+
+            val startAt = event.getTimestamp("startAt")
+            val isOpen = registration.getString("status") == RegistrationStatus.REGISTERED &&
+                    startAt != null && startAt <= Timestamp.now()
+            if (!isOpen) throw AttendanceNotOpenException()
+
+            transaction.update(
+                registrationRef,
+                mapOf(
+                    "status" to RegistrationStatus.ATTENDED,
+                    "checkedInAt" to FieldValue.serverTimestamp()
+                )
+            )
+        }.awaitResult()
     }
 
     /**
