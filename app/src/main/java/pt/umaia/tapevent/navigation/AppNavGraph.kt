@@ -19,6 +19,7 @@ import pt.umaia.tapevent.pages.dashboard.DashboardScreen
 import pt.umaia.tapevent.pages.discover.DiscoverScreen
 import pt.umaia.tapevent.pages.eventdetails.EventDetailsScreen
 import pt.umaia.tapevent.pages.feedback.FeedbackScreen
+import pt.umaia.tapevent.pages.friends.FriendsScreen
 import pt.umaia.tapevent.pages.ideas.IdeasScreen
 import pt.umaia.tapevent.pages.ticket.TicketScreen
 import pt.umaia.tapevent.pages.login.LoginScreen
@@ -32,6 +33,7 @@ object Routes {
     const val MY_EVENTS = "student/my-events"
     const val IDEAS = "student/ideas"
     const val ALERTS = "student/alerts"
+    const val FRIENDS = "student/friends"
     const val FEEDBACK = "student/feedback/{eventId}"
     const val ORGANIZER_HOME = "organizer/dashboard"
     const val CREATE_EVENT = "organizer/create-event"
@@ -88,6 +90,9 @@ fun AppNavGraph(
         }
         composable(Routes.IDEAS) {
             IdeasScreen()
+        }
+        composable(Routes.FRIENDS) {
+            FriendsScreen()
         }
         composable(Routes.ALERTS) {
             AlertsScreen(onSignOut = signOut)

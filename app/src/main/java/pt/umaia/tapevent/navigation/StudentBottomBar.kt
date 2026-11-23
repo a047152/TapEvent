@@ -3,6 +3,7 @@ package pt.umaia.tapevent.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Icon
@@ -17,11 +18,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 
 private data class BottomTab(val route: String, val label: String, val icon: ImageVector)
 
-/** Student tabs. More are added as the pages are built (Propor e votar, Amigos, Avisos). */
+/** Student tabs. */
 private val STUDENT_TABS = listOf(
     BottomTab(Routes.STUDENT_HOME, "Descobrir", Icons.Filled.Search),
     BottomTab(Routes.MY_EVENTS, "Meus", Icons.Filled.DateRange),
     BottomTab(Routes.IDEAS, "Propor", Icons.Filled.ThumbUp),
+    BottomTab(Routes.FRIENDS, "Amigos", Icons.Filled.Person),
     BottomTab(Routes.ALERTS, "Avisos", Icons.Filled.Notifications)
 )
 
