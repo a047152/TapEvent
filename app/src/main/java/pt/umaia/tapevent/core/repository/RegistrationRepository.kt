@@ -51,6 +51,20 @@ class RegistrationRepository {
         awaitClose { registration.remove() }
     }
 
+    /** Live list of every registration for one event (organizer's attendee list). */
+    fun observeEventRegistrations(eventId: String): Flow<List<Registration>> = callbackFlow {
+        val registration = registrations
+            .whereEqualTo("eventId", eventId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                trySend(snapshot?.documents.orEmpty().map(Registration::fromDocument))
+            }
+        awaitClose { registration.remove() }
+    }
+
     /**
      * Marks the student as present. Allowed from the event start time onwards,
      * and only for a registration that holds a seat ("inscrito").

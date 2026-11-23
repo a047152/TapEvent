@@ -2,6 +2,7 @@ package pt.umaia.tapevent.core.repository
 
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
 import pt.umaia.tapevent.core.util.awaitResult
@@ -43,6 +44,27 @@ class AuthRepository {
         users.document(uid).set(profile).awaitResult()
 
         return User(uid = uid, name = name, email = email, role = Roles.STUDENT)
+    }
+
+    /**
+     * Several profiles at once (e.g. the names on an attendee list).
+     * Firestore "in" queries accept up to 30 ids, so the list is read in chunks.
+     */
+    suspend fun getUsers(uids: Collection<String>): Map<String, User> {
+        if (uids.isEmpty()) return emptyMap()
+        val result = mutableMapOf<String, User>()
+        uids.distinct().chunked(30).forEach { chunk ->
+            val snapshot = users.whereIn(FieldPath.documentId(), chunk).get().awaitResult()
+            snapshot.documents.forEach { doc ->
+                result[doc.id] = User(
+                    uid = doc.id,
+                    name = doc.getString("name").orEmpty(),
+                    email = doc.getString("email").orEmpty(),
+                    role = doc.getString("role") ?: Roles.STUDENT
+                )
+            }
+        }
+        return result
     }
 
     suspend fun getUser(uid: String): User? {

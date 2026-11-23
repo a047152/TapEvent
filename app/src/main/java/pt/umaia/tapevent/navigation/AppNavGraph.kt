@@ -12,6 +12,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import pt.umaia.tapevent.core.model.Roles
 import pt.umaia.tapevent.pages.approvals.ApprovalsScreen
+import pt.umaia.tapevent.pages.attendees.AttendeesScreen
 import pt.umaia.tapevent.pages.createevent.CreateEventScreen
 import pt.umaia.tapevent.pages.dashboard.DashboardScreen
 import pt.umaia.tapevent.pages.discover.DiscoverScreen
@@ -30,11 +31,13 @@ object Routes {
     const val FEEDBACK = "student/feedback/{eventId}"
     const val ORGANIZER_HOME = "organizer/dashboard"
     const val CREATE_EVENT = "organizer/create-event"
+    const val ATTENDEES = "organizer/attendees/{eventId}"
     const val ADMIN_HOME = "admin/approvals"
 
     fun eventDetails(eventId: String) = "student/event/$eventId"
     fun ticket(eventId: String) = "student/ticket/$eventId"
     fun feedback(eventId: String) = "student/feedback/$eventId"
+    fun attendees(eventId: String) = "organizer/attendees/$eventId"
 
     fun homeFor(role: String): String = when (role) {
         Roles.ORGANIZER -> ORGANIZER_HOME
@@ -129,10 +132,17 @@ fun AppNavGraph(
         composable(Routes.ORGANIZER_HOME) {
             DashboardScreen(
                 onCreateEvent = { navController.navigate(Routes.CREATE_EVENT) },
-                onViewAttendees = { /* TODO (next page): open "Inscritos no evento" */ },
+                onViewAttendees = { id -> navController.navigate(Routes.attendees(id)) },
                 onViewFeedback = { /* TODO: open "Feedback dos teus eventos" */ },
                 onSignOut = signOut
             )
+        }
+        composable(
+            route = Routes.ATTENDEES,
+            arguments = listOf(navArgument("eventId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId").orEmpty()
+            AttendeesScreen(eventId = eventId, onBack = { navController.popBackStack() })
         }
         composable(Routes.CREATE_EVENT) {
             CreateEventScreen(
