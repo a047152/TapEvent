@@ -18,6 +18,7 @@ import pt.umaia.tapevent.pages.dashboard.DashboardScreen
 import pt.umaia.tapevent.pages.discover.DiscoverScreen
 import pt.umaia.tapevent.pages.eventdetails.EventDetailsScreen
 import pt.umaia.tapevent.pages.feedback.FeedbackScreen
+import pt.umaia.tapevent.pages.ideas.IdeasScreen
 import pt.umaia.tapevent.pages.ticket.TicketScreen
 import pt.umaia.tapevent.pages.login.LoginScreen
 import pt.umaia.tapevent.pages.myevents.MyEventsScreen
@@ -28,6 +29,7 @@ object Routes {
     const val EVENT_DETAILS = "student/event/{eventId}"
     const val TICKET = "student/ticket/{eventId}"
     const val MY_EVENTS = "student/my-events"
+    const val IDEAS = "student/ideas"
     const val FEEDBACK = "student/feedback/{eventId}"
     const val ORGANIZER_HOME = "organizer/dashboard"
     const val CREATE_EVENT = "organizer/create-event"
@@ -46,16 +48,20 @@ object Routes {
     }
 }
 
+/**
+ * @param onSignOut called after Firebase sign-out. MainActivity uses it to throw away
+ * this NavController (and every screen's ViewModel and saved tab state), so the next
+ * user never sees data loaded for the previous one.
+ */
 @Composable
 fun AppNavGraph(
+    onSignOut: () -> Unit,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
     val signOut: () -> Unit = {
         Firebase.auth.signOut()
-        navController.navigate(Routes.LOGIN) {
-            popUpTo(navController.graph.id) { inclusive = true }
-        }
+        onSignOut()
     }
 
     NavHost(
@@ -77,6 +83,9 @@ fun AppNavGraph(
                 onEventClick = { event -> navController.navigate(Routes.eventDetails(event.id)) },
                 onSignOut = signOut
             )
+        }
+        composable(Routes.IDEAS) {
+            IdeasScreen()
         }
         composable(Routes.MY_EVENTS) {
             MyEventsScreen(

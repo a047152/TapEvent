@@ -9,12 +9,15 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import pt.umaia.tapevent.core.model.Event
+import pt.umaia.tapevent.core.model.Idea
 import pt.umaia.tapevent.core.repository.AuthRepository
 import pt.umaia.tapevent.core.repository.EventRepository
+import pt.umaia.tapevent.core.repository.IdeaRepository
 
 class ApprovalsViewModel(
     private val authRepository: AuthRepository = AuthRepository(),
-    private val eventRepository: EventRepository = EventRepository()
+    private val eventRepository: EventRepository = EventRepository(),
+    private val ideaRepository: IdeaRepository = IdeaRepository()
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ApprovalsUiState())
@@ -22,6 +25,30 @@ class ApprovalsViewModel(
 
     init {
         observePendingEvents()
+        observePendingIdeas()
+    }
+
+    private fun observePendingIdeas() {
+        viewModelScope.launch {
+            ideaRepository.observePendingIdeas()
+                .catch { _uiState.update { it.copy(errorMessage = "Não foi possível carregar as ideias.") } }
+                .collect { ideas -> _uiState.update { it.copy(pendingIdeas = ideas) } }
+        }
+    }
+
+    /** "Aprovar votação" or "Rejeitar" on a student idea (no confirmation, as in the mockup). */
+    fun reviewIdea(idea: Idea, approve: Boolean) {
+        val adminUid = authRepository.currentUid ?: return
+        _uiState.update { it.copy(processingIds = it.processingIds + idea.id) }
+        viewModelScope.launch {
+            val text = try {
+                ideaRepository.reviewIdea(idea.id, approve, adminUid)
+                if (approve) "Ideia aprovada. Os estudantes já podem votar." else "Ideia rejeitada."
+            } catch (e: Exception) {
+                "Não foi possível atualizar a ideia."
+            }
+            _uiState.update { it.copy(processingIds = it.processingIds - idea.id, message = text) }
+        }
     }
 
     private fun observePendingEvents() {

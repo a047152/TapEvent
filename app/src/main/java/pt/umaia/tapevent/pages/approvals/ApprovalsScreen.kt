@@ -3,6 +3,7 @@ package pt.umaia.tapevent.pages.approvals
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.Timestamp
 import pt.umaia.tapevent.core.model.Event
+import pt.umaia.tapevent.core.model.Idea
 import pt.umaia.tapevent.ui.theme.TapEventTheme
 
 /** Stateful screen: connects the ViewModel to the UI. */
@@ -52,6 +54,7 @@ fun ApprovalsScreen(
         state = state,
         onApprove = viewModel::approve,
         onReject = viewModel::askToReject,
+        onReviewIdea = viewModel::reviewIdea,
         onSignOut = onSignOut,
         modifier = modifier
     )
@@ -73,6 +76,7 @@ fun ApprovalsContent(
     state: ApprovalsUiState,
     onApprove: (Event) -> Unit,
     onReject: (Event) -> Unit,
+    onReviewIdea: (Idea, Boolean) -> Unit,
     onSignOut: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -86,7 +90,12 @@ fun ApprovalsContent(
             Text("Aprovações", style = MaterialTheme.typography.headlineMedium)
         }
 
-        item { PendingCounter(count = state.pendingEvents.size, isLoading = state.isLoading) }
+        item {
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                PendingCounter(state.pendingEvents.size, "Eventos por aprovar", state.isLoading, Modifier.weight(1f))
+                PendingCounter(state.pendingIdeas.size, "Ideias por aprovar", state.isLoading, Modifier.weight(1f))
+            }
+        }
 
         item {
             Text(
@@ -108,7 +117,7 @@ fun ApprovalsContent(
             state.pendingEvents.isEmpty() -> item {
                 Text("Sem eventos por aprovar.", style = MaterialTheme.typography.bodyMedium)
             }
-            else -> items(state.pendingEvents, key = { it.id }) { event ->
+            else -> items(state.pendingEvents, key = { "event-${it.id}" }) { event ->
                 PendingEventCard(
                     event = event,
                     isProcessing = event.id in state.processingIds,
@@ -118,7 +127,21 @@ fun ApprovalsContent(
             }
         }
 
-        // TODO (plan step 11): "Ideas from students" section, after Propose & vote exists.
+        item {
+            Text("Ideias dos estudantes", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        }
+        if (!state.isLoading && state.pendingIdeas.isEmpty()) {
+            item { Text("Sem ideias por aprovar.", style = MaterialTheme.typography.bodyMedium) }
+        } else {
+            items(state.pendingIdeas, key = { "idea-${it.id}" }) { idea ->
+                PendingIdeaCard(
+                    idea = idea,
+                    isProcessing = idea.id in state.processingIds,
+                    onApprove = { onReviewIdea(idea, true) },
+                    onReject = { onReviewIdea(idea, false) }
+                )
+            }
+        }
 
         item {
             TextButton(onClick = onSignOut) { Text("Sair") }
@@ -127,15 +150,15 @@ fun ApprovalsContent(
 }
 
 @Composable
-private fun PendingCounter(count: Int, isLoading: Boolean) {
-    Card(Modifier.fillMaxWidth()) {
-        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+private fun PendingCounter(count: Int, label: String, isLoading: Boolean, modifier: Modifier = Modifier) {
+    Card(modifier) {
+        Column(Modifier.padding(16.dp)) {
             Text(
                 if (isLoading) "–" else "$count",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold
             )
-            Text("  eventos por aprovar", style = MaterialTheme.typography.bodyLarge)
+            Text(label, style = MaterialTheme.typography.bodyMedium)
         }
     }
 }
@@ -157,7 +180,7 @@ private fun ApprovalsPreview() {
     TapEventTheme {
         ApprovalsContent(
             state = ApprovalsUiState(isLoading = false, pendingEvents = listOf(sample, sample.copy(id = "2"))),
-            onApprove = {}, onReject = {}, onSignOut = {}
+            onApprove = {}, onReject = {}, onReviewIdea = { _, _ -> }, onSignOut = {}
         )
     }
 }
