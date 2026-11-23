@@ -11,6 +11,7 @@ import androidx.navigation.navArgument
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import pt.umaia.tapevent.core.model.Roles
+import pt.umaia.tapevent.pages.alerts.AlertsScreen
 import pt.umaia.tapevent.pages.approvals.ApprovalsScreen
 import pt.umaia.tapevent.pages.attendees.AttendeesScreen
 import pt.umaia.tapevent.pages.createevent.CreateEventScreen
@@ -30,6 +31,7 @@ object Routes {
     const val TICKET = "student/ticket/{eventId}"
     const val MY_EVENTS = "student/my-events"
     const val IDEAS = "student/ideas"
+    const val ALERTS = "student/alerts"
     const val FEEDBACK = "student/feedback/{eventId}"
     const val ORGANIZER_HOME = "organizer/dashboard"
     const val CREATE_EVENT = "organizer/create-event"
@@ -86,6 +88,9 @@ fun AppNavGraph(
         }
         composable(Routes.IDEAS) {
             IdeasScreen()
+        }
+        composable(Routes.ALERTS) {
+            AlertsScreen(onSignOut = signOut)
         }
         composable(Routes.MY_EVENTS) {
             MyEventsScreen(

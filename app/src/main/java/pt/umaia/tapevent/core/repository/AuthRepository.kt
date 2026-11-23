@@ -6,6 +6,7 @@ import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
 import pt.umaia.tapevent.core.util.awaitResult
+import pt.umaia.tapevent.core.model.AlertSettings
 import pt.umaia.tapevent.core.model.Roles
 import pt.umaia.tapevent.core.model.User
 
@@ -76,7 +77,8 @@ class AuthRepository {
             name = doc.getString("name").orEmpty(),
             email = doc.getString("email").orEmpty(),
             role = doc.getString("role") ?: Roles.STUDENT,
-            interests = (doc.get("interests") as? List<String>).orEmpty()
+            interests = (doc.get("interests") as? List<String>).orEmpty(),
+            alerts = AlertSettings.fromMap(doc.get("alerts") as? Map<*, *>)
         )
     }
 
